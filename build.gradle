@@ -1,0 +1,65 @@
+plugins {
+	id 'org.springframework.boot' version '2.7.4'
+	id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+	id 'maven-publish'
+	id 'java'
+
+}
+
+group = 'com.ibm.service'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+publishing{
+	publications{
+		maven(MavenPublication){
+			groupId= 'com.ibm.service'
+			artifactId= 'loginservice'
+			version= '0.1'
+		}
+	}
+
+	repositories {
+		maven {
+			name= "loginRepoPackages"
+			url= uri("https://maven.pkg.github.com/akash1202/service-login")
+			credentials{
+				username= findProperty("github.username")
+				password= findProperty("github.token")
+			}
+		}
+
+		publications{
+			gpr(MavenPublication){
+				from(components.java)
+			}
+		}
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+//	implementation 'org.hibernate.orm:hibernate-core:6.1.4.Final'
+	implementation 'org.postgresql:postgresql'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
